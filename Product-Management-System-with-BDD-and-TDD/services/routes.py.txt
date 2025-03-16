@@ -1,0 +1,48 @@
+from flask import Flask, request, jsonify
+from myapp.models import Product
+
+app = Flask(__name__)
+
+@app.route('/products/', methods=['POST'])
+def create_product():
+    data = request.get_json()
+    product = Product.objects.create(**data)
+    return jsonify(product.to_dict()), 201
+
+@app.route('/products/<int:id>/', methods=['PUT'])
+def update_product(id):
+    product = Product.objects.get(id=id)
+    data = request.get_json()
+    for key, value in data.items():
+        setattr(product, key, value)
+    product.save()
+    return jsonify(product.to_dict()), 200
+
+@app.route('/products/<int:id>/', methods=['DELETE'])
+def delete_product(id):
+    product = Product.objects.get(id=id)
+    product.delete()
+    return '', 204
+
+@app.route('/products/', methods=['GET'])
+def list_all_products():
+    products = Product.objects.all()
+    return jsonify([product.to_dict() for product in products])
+
+@app.route('/products/', methods=['GET'])
+def list_by_name():
+    name = request.args.get('name')
+    products = Product.objects.filter(name=name)
+    return jsonify([product.to_dict() for product in products])
+
+@app.route('/products/', methods=['GET'])
+def list_by_category():
+    category = request.args.get('category')
+    products = Product.objects.filter(category=category)
+    return jsonify([product.to_dict() for product in products])
+
+@app.route('/products/', methods=['GET'])
+def list_by_availability():
+    availability = request.args.get('availability') == 'True'
+    products = Product.objects.filter(availability=availability)
+    return jsonify([product.to_dict() for product in products])

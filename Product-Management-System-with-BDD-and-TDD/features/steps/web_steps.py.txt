@@ -1,0 +1,16 @@
+from behave import given, when, then
+from myapp.models import Product
+from myapp.app import client
+
+@given('there are products in the system')
+def step_impl(context):
+    Product.objects.create(name="Product1", category="Category1", price=100, availability=True)
+    Product.objects.create(name="Product2", category="Category2", price=150, availability=False)
+
+@when('I list all products')
+def step_impl(context):
+    context.response = client.get('/products/')
+
+@then('I should see a list of products')
+def step_impl(context):
+    assert len(context.response.data) > 0

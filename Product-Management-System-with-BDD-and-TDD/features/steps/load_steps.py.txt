@@ -1,0 +1,7 @@
+from behave import given, when, then
+from myapp.models import Product
+
+@given('there are products in the system')
+def step_impl(context):
+    Product.objects.create(name="Product1", category="Category1", price=100, availability=True)
+    Product.objects.create(name="Product2", category="Category2", price=150, availability=False)

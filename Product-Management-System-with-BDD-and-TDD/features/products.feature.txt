@@ -1,0 +1,26 @@
+Feature: Product management
+
+  Scenario: List all products
+    Given there are products in the system
+    When I list all products
+    Then I should see a list of products
+
+  Scenario: Find product by name
+    Given there is a product named "Product1"
+    When I search for products by name "Product1"
+    Then I should see the product "Product1"
+
+  Scenario: Update product
+    Given there is a product named "Product2"
+    When I update the product's name to "UpdatedProduct"
+    Then I should see the product with the name "UpdatedProduct"
+
+  Scenario: Delete product
+    Given there is a product named "Product3"
+    When I delete the product "Product3"
+    Then I should no longer see "Product3"
+
+  Scenario: Search products by availability
+    Given there are products with varying availability
+    When I search for available products
+    Then I should only see available products

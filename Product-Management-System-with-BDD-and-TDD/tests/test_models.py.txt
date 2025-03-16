@@ -1,0 +1,33 @@
+import pytest
+from myapp.models import Product
+
+def test_create_product():
+    product = Product.objects.create(name="Product1", category="Category1", price=100, availability=True)
+    assert product.name == "Product1"
+
+def test_update_product():
+    product = Product.objects.create(name="Product2", category="Category2", price=150, availability=False)
+    product.name = "UpdatedProduct"
+    product.save()
+    assert product.name == "UpdatedProduct"
+
+def test_delete_product():
+    product = Product.objects.create(name="Product3", category="Category3", price=200, availability=True)
+    product.delete()
+    assert Product.objects.count() == 0
+
+def test_list_all_products():
+    products = Product.objects.all()
+    assert len(products) == 3  # assuming three products are present
+
+def test_find_by_name():
+    product = Product.objects.get(name="Product1")
+    assert product.name == "Product1"
+
+def test_find_by_category():
+    product = Product.objects.filter(category="Category1").first()
+    assert product.category == "Category1"
+
+def test_find_by_availability():
+    available_products = Product.objects.filter(availability=True)
+    assert len(available_products) > 0

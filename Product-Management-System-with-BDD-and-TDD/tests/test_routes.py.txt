@@ -1,0 +1,44 @@
+import pytest
+from rest_framework import status
+from rest_framework.test import APIClient
+from myapp.models import Product
+
+client = APIClient()
+
+def test_create_product():
+    data = {"name": "Product1", "category": "Category1", "price": 100, "availability": True}
+    response = client.post('/products/', data, format='json')
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.data['name'] == "Product1"
+
+def test_update_product():
+    product = Product.objects.create(name="Product2", category="Category2", price=150, availability=False)
+    data = {"name": "UpdatedProduct", "category": "Category2", "price": 160, "availability": True}
+    response = client.put(f'/products/{product.id}/', data, format='json')
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['name'] == "UpdatedProduct"
+
+def test_delete_product():
+    product = Product.objects.create(name="Product3", category="Category3", price=200, availability=True)
+    response = client.delete(f'/products/{product.id}/')
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+def test_list_all_products():
+    response = client.get('/products/')
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) > 0
+
+def test_list_by_name():
+    response = client.get('/products/?name=Product1')
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) > 0
+
+def test_list_by_category():
+    response = client.get('/products/?category=Category1')
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) > 0
+
+def test_list_by_availability():
+    response = client.get('/products/?availability=True')
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) > 0
